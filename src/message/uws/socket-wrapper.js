@@ -51,6 +51,7 @@ class UwsSocketWrapper extends EventEmitter {
   // eslint-disable-next-line class-methods-use-this
   prepareMessage (message) {
     UwsSocketWrapper.lastPreparedMessage = message
+    this._logger.outboundPacket(message, this.user)    
     return uws.native.server.prepareMessage(message, uws.OPCODE_TEXT)
   }
 
@@ -90,6 +91,7 @@ class UwsSocketWrapper extends EventEmitter {
    * @returns {void}
    */
   sendNative (message, allowBuffering) {
+    this._logger.outboundPacket(message, this.user)    
     if (this._config.outgoingBufferTimeout === 0) {
       uws.native.server.send(this._external, message, uws.OPCODE_TEXT)
     } else if (!allowBuffering) {

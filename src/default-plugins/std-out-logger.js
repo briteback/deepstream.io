@@ -1,6 +1,7 @@
 'use strict'
 
 require('colors')
+const fs = require('fs')
 const C = require('../constants/constants')
 
 const EOL = require('os').EOL
@@ -60,20 +61,42 @@ module.exports = class StdOutLogger {
     }
   }
 
+  setDeepstream (ds) {
+    this.packetStream = fs.createWriteStream(`./log/packet-${ds._options.serverName}-${Date.now()}.log`)
+  }
+
+  /**
+   * Logs a line
+   *
+   * @param   {Number} logLevel   One of the C.LOG_LEVEL constants
+   * @param   {String} event      One of the C.EVENT constants
+   * @param   {String} logMessage Any string
+   *
+   * @public
+   * @returns {void}
+   */
+  inboundPacket(message, user) {
+    this.packetStream.write(`< ${user} ${message}${EOL}`)
+  }
+  
+  outboundPacket(message, user) {
+    this.packetStream.write(`> ${user} ${message}${EOL}`)
+  }
+
   debug (event, logMessage) {
     this.log(C.LOG_LEVEL.DEBUG, event, logMessage)
   }
 
   info (event, logMessage) {
-    this.log(C.EVENT.INFO, event, logMessage)
+    this.log(C.LOG_LEVEL.INFO, event, logMessage)
   }
 
   warn (event, logMessage) {
-    this.log(C.EVENT.WARN, event, logMessage)
+    this.log(C.LOG_LEVEL.WARN, event, logMessage)
   }
 
   error (event, logMessage) {
-    this.log(C.EVENT.ERROR, event, logMessage)
+    this.log(C.LOG_LEVEL.ERROR, event, logMessage)
   }
 
   /**

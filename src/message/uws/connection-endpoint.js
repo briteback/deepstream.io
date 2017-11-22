@@ -339,6 +339,7 @@ module.exports = class UWSConnectionEndpoint extends events.EventEmitter {
       return
     }
 
+    this._logger.inboundPacket(connectionMessage, socketWrapper.user)
     const msg = messageParser.parse(connectionMessage)[0]
 
     if (msg === null || msg === undefined) {
@@ -475,6 +476,7 @@ module.exports = class UWSConnectionEndpoint extends events.EventEmitter {
     delete socketWrapper.authCallBack
     socketWrapper.once('close', this._onSocketClose.bind(this, socketWrapper))
     socketWrapper.onMessage = (message) => {
+      this._logger.inboundPacket(message, socketWrapper.user)
       const parsedMessages = messageParser.parse(message)
       this.onMessages(socketWrapper, parsedMessages)
     }

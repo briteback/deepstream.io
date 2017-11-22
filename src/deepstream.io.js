@@ -360,6 +360,7 @@ module.exports = class Deepstream extends EventEmitter {
  * @returns {void}
  */
   _run () {
+    this._options.logger.info(C.EVENT.INFO, 'Server name: ' + this._options.serverName)
     this._options.logger.info(C.EVENT.INFO, 'Deepstream started')
     this.emit('started')
   }
