@@ -56,3 +56,9 @@ Then(/^(.+) receives? an (un)?authenticated login response(?: with data (\{.*\})
 Then(/^(.+) "([^"]*)" callback was( not)? called( once)?( with (\{.*\}))?$/, (clientExpression, eventName, notCalled, once, data) => {
   client.callbackCalled(clientExpression, eventName, notCalled, once, data)
 })
+
+When(/^(.+) goes offline$/, client.pause)
+
+When(/^(.+) comes back online$/, (clientExpression, done) => {
+  client.resume(clientExpression, done)
+})

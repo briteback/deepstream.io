@@ -55,6 +55,18 @@ module.exports = {
     })
   },
 
+  pause (clientExpression) {
+    clientHandler.getClients(clientExpression).forEach((client) => {
+      client.client.pause()
+    })
+  },
+
+  resume (clientExpression, done) {
+    clientHandler.getClients(clientExpression).forEach((client) => {
+      client.client.resume(done)
+    })
+  },
+
   recievedTooManyLoginAttempts (clientExpression) {
     clientHandler.getClients(clientExpression).forEach((client) => {
       const errorSpy = client.error[C.TOPIC[C.TOPIC.AUTH]][C.AUTH_ACTIONS[C.AUTH_ACTIONS.TOO_MANY_AUTH_ATTEMPTS]]

@@ -66,7 +66,11 @@
 			"read": true,
 			"delete": false,
 			"listen": false
-		 }
+		 },
+		"record-offline/$userid": {
+			"write": "user.id === $userid",
+			"delete": "user.id === $userid"
+		}
 	},
 	"event": {
 		"*": {
