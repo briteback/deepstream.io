@@ -194,13 +194,25 @@ module.exports = class SubscriptionRegistry {
       // an iterator
       const first = sockets.values().next().value
       const preparedMessage = first.prepareMessage(sharedMessages)
+      if (first.isClosed === true) {
+        console.error('uws__ first is closed', preparedMessage);
+      }
+      const closedSockets = [];
       for (const socket of sockets) {
         if (socket.__id !== idCounter) {
-          socket.sendPrepared(preparedMessage)
+          if (socket.isClosed === true) {
+            console.error('uws__ got closed in set', preparedMessage);
+            if (this._sockets.has(socket)) {
+              console.error('uws__ closed socket still in _sockets', this._sockets.get(socket));
+              closedSockets.push(socket);
+            }
+          } else {
+            socket.sendPrepared(preparedMessage);
+          }
         }
       }
       first.finalizeMessage(preparedMessage)
-
+      closedSockets.map(socket => this._onSocketClose(socket));
       subscription.sharedMessages = ''
       subscription.uniqueSenders.clear()
     }
