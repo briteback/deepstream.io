@@ -146,6 +146,7 @@ module.exports = class SubscriptionRegistry {
       subscription.sockets.delete(socket)
       this._removeSocket(subscription, socket)
     }
+    this._sockets.delete(socket);
   }
 
   /**
