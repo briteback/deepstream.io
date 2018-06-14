@@ -142,7 +142,12 @@ module.exports = class SubscriptionRegistry {
   * @param {SockerWrapper} the socket that closed
   */
   _onSocketClose (socket) {
-    for (const subscription of this._sockets.get(socket)) {
+    const _socket = this._sockets.get(socket)
+    if (!_socket) {
+      return;
+    }
+
+    for (const subscription of _socket) {
       subscription.sockets.delete(socket)
       this._removeSocket(subscription, socket)
     }
