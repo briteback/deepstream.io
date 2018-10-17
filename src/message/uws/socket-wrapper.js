@@ -91,10 +91,10 @@ class UwsSocketWrapper extends EventEmitter {
    */
   sendNative (message, allowBuffering) {
     if (this._config.outgoingBufferTimeout === 0) {
-      uws.native.server.send(this._external, message, uws.OPCODE_TEXT)
+      this.uwsSend(this._external, message, uws.OPCODE_TEXT)
     } else if (!allowBuffering) {
       this.flush()
-      uws.native.server.send(this._external, message, uws.OPCODE_TEXT)
+      this.uwsSend(this._external, message, uws.OPCODE_TEXT)
     } else {
       this._bufferedWrites += message
       this._connectionEndpoint.scheduleFlush(this)
@@ -108,7 +108,7 @@ class UwsSocketWrapper extends EventEmitter {
    */
   flush () {
     if (this._bufferedWrites !== '') {
-      uws.native.server.send(this._external, this._bufferedWrites, uws.OPCODE_TEXT)
+      this.uwsSend(this._external, this._bufferedWrites, uws.OPCODE_TEXT)
       this._bufferedWrites = ''
     }
   }
@@ -187,6 +187,11 @@ class UwsSocketWrapper extends EventEmitter {
    */
   getHandshakeData () {
     return this._handshakeData
+  }
+
+  uwsSend(external, message, opcode) {
+    if (!this.isClosed)
+      uws.native.server.send(external, message, opcode)
   }
 }
 
