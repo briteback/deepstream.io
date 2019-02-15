@@ -28,7 +28,6 @@ export default class UWSConnectionEndpoint extends EventEmitter implements Conne
   private dsOptions: any
   private initialised: boolean = false
   private flushTimeout: number | null
-  private authenticatedSockets: Set<SocketWrapper> = new Set()
   private logger: Logger
   private authenticationHandler: AuthenticationHandler
   private server: https.Server | http.Server
@@ -509,7 +508,6 @@ export default class UWSConnectionEndpoint extends EventEmitter implements Conne
       this.emit('client-connected', socketWrapper)
     }
 
-    this.authenticatedSockets.add(socketWrapper)
     this.logger.info(AUTH_ACTIONS[AUTH_ACTIONS.AUTH_SUCCESSFUL], socketWrapper.user)
   }
 
@@ -601,10 +599,6 @@ export default class UWSConnectionEndpoint extends EventEmitter implements Conne
     if (socketWrapper.user !== OPEN) {
       this.emit('client-disconnected', socketWrapper)
     }
-
-    // uws.native.clearUserData(socketWrapper._external)
-
-    this.authenticatedSockets.delete(socketWrapper)
   }
 
   /**
