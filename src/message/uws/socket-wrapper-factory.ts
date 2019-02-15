@@ -170,9 +170,11 @@ export class UwsSocketWrapper extends EventEmitter implements SocketWrapper {
   public close (): void {
     this.isClosed = true
     delete this.authCallback
+    delete this.onMessage
     this.emit('close', this)
     this.logger.info(EVENT.CLIENT_DISCONNECTED, this.user)
     this.removeAllListeners()
+    uws.native.clearUserData(this.external)
   }
 
   /**

@@ -223,6 +223,10 @@ export default class SubscriptionRegistry {
    * Adds a SocketWrapper as a subscriber to a topic
    */
   public subscribe (message: SubscriptionMessage, socket: SocketWrapper, silent?: boolean): void {
+    if (socket.isClosed) {
+      // we are to late, socket is gone and going forward here will leak the socket
+      return
+    }
     const name = message.name
     const subscription = this.subscriptions.get(name) || {
       name,
