@@ -28,7 +28,6 @@ class UWSConnectionEndpoint extends events_1.EventEmitter {
         this.isReady = false;
         this.description = 'µWebSocket Connection Endpoint';
         this.initialised = false;
-        this.authenticatedSockets = new Set();
         this._flushSockets = this._flushSockets.bind(this);
     }
     /**
@@ -418,7 +417,6 @@ class UWSConnectionEndpoint extends events_1.EventEmitter {
         if (socketWrapper.user !== OPEN) {
             this.emit('client-connected', socketWrapper);
         }
-        this.authenticatedSockets.add(socketWrapper);
         this.logger.info(constants_1.AUTH_ACTIONS[constants_1.AUTH_ACTIONS.AUTH_SUCCESSFUL], socketWrapper.user);
     }
     /**
@@ -500,8 +498,6 @@ class UWSConnectionEndpoint extends events_1.EventEmitter {
         if (socketWrapper.user !== OPEN) {
             this.emit('client-disconnected', socketWrapper);
         }
-        // uws.native.clearUserData(socketWrapper._external)
-        this.authenticatedSockets.delete(socketWrapper);
     }
     /**
      * HTTP upgrade request listener

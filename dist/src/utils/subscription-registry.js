@@ -169,6 +169,10 @@ class SubscriptionRegistry {
      * Adds a SocketWrapper as a subscriber to a topic
      */
     subscribe(message, socket, silent) {
+        if (socket.isClosed) {
+            // we are to late, socket is gone and going forward here will leak the socket
+            return;
+        }
         const name = message.name;
         const subscription = this.subscriptions.get(name) || {
             name,

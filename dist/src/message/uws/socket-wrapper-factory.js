@@ -139,9 +139,11 @@ class UwsSocketWrapper extends events_1.EventEmitter {
     close() {
         this.isClosed = true;
         delete this.authCallback;
+        delete this.onMessage;
         this.emit('close', this);
         this.logger.info(constants_1.EVENT.CLIENT_DISCONNECTED, this.user);
         this.removeAllListeners();
+        uws.native.clearUserData(this.external);
     }
     /**
      * Returns a map of parameters that were collected
