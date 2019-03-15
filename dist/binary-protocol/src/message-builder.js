@@ -51,19 +51,32 @@ function getMessage(msg, isAck) {
             throw new Error(`message ${message_constants_1.TOPIC[message.topic]} ${message.action} should not have an ack`);
         }
     }
+    // these mimic the META_KEYS constants.
     const meta = Object.create(null);
-    for (const key in message_constants_1.META_KEYS) {
-        meta[message_constants_1.META_KEYS[key]] = message[key];
+    if (message.payloadEncoding !== message_constants_1.PAYLOAD_ENCODING.JSON) {
+        meta.e = message.payloadEncoding;
     }
-    if (meta[message_constants_1.META_KEYS.payloadEncoding] === message_constants_1.PAYLOAD_ENCODING.JSON) {
-        delete meta[message_constants_1.META_KEYS.payloadEncoding];
-    }
+    meta.n = message.name;
+    meta.m = message.names;
+    meta.s = message.subscription;
+    meta.c = message.correlationId;
+    meta.v = message.version;
+    meta.p = message.path;
+    meta.r = message.reason;
+    meta.u = message.url;
+    meta.t = message.originalTopic;
+    meta.a = message.originalAction;
+    meta.x = message.protocolVersion;
+    meta.rn = message.requestorName;
+    meta.rd = message.requestorData;
+    meta.ts = message.trustedSender;
+    meta.rt = message.registryTopic;
     const metaError = message_validator_1.validateMeta(message.topic, action, meta);
     if (metaError) {
         throw new Error(`invalid ${message_constants_1.TOPIC[message.topic]} ${message_constants_1.ACTIONS[message.topic][action] || action}: ${metaError}`);
     }
     const metaStr = JSON.stringify(meta);
-    const metaBuff = metaStr === '{}' ? null : Buffer.from(metaStr, 'utf8');
+    const metaBuff = metaStr.length === 2 ? null : Buffer.from(metaStr, 'utf8');
     let payloadBuff;
     if (message.data instanceof Buffer) {
         payloadBuff = message.data;
