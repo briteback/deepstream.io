@@ -193,8 +193,6 @@ export default class RecordTransition {
         this,
         this.metaData,
       )
-    } else if (this.steps.length === 1) {
-      this.next()
     }
   }
 

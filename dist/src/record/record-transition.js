@@ -109,9 +109,6 @@ class RecordTransition {
             this.recordRequestMade = true;
             record_request_1.recordRequest(this.name, this.config, this.services, socketWrapper, (r, v, d) => this.onRecord(v, d, upsert), this.onCacheRequestError, this, this.metaData);
         }
-        else if (this.steps.length === 1) {
-            this.next();
-        }
     }
     /**
      * Destroys the instance
